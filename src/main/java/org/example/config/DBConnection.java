@@ -2,17 +2,19 @@ package org.example.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DBConnection {
+    private static final String URL = "jdbc:postgresql://localhost:5432/mini_dish_db";
+    private static final String USER = "mini_dish_user";
+    private static final String PASSWORD = "123456";
+
+
     public static Connection getDBConnection() {
         try {
-            return DriverManager.getConnection(
-                    System.getenv("JDBC_URL"),
-                    System.getenv("USERNAME"),
-                    System.getenv("PASSWORD")
-            );
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur de connexion à la base : " + e.getMessage(), e);
         }
     }
 }

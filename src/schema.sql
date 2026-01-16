@@ -1,26 +1,25 @@
--- ENUMS
-CREATE TYPE category_enum AS ENUM (
-    'VEGETABLE', 'ANIMAL', 'MARINE', 'DAIRY', 'OTHER'
+-- Création du type enum
+CREATE TYPE dish_type_enum AS ENUM ('ENTREE', 'PLAT_PRINCIPAL', 'DESSERT', 'BOISSON');
+
+-- Table des plats
+CREATE TABLE dishes (
+                        id SERIAL PRIMARY KEY,
+                        name VARCHAR(100) NOT NULL,
+                        dish_type dish_type_enum NOT NULL
 );
 
-CREATE TYPE dish_type_enum AS ENUM (
-    'START', 'MAIN', 'DESSERT'
+-- Table des ingrédients (prix unitaire)
+CREATE TABLE ingredients (
+                             id SERIAL PRIMARY KEY,
+                             name VARCHAR(100) NOT NULL,
+                             price DECIMAL(10,2) NOT NULL,
+                             category VARCHAR(50)
 );
 
-CREATE TABLE Dish(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(150) NOT NULL,
-    dish_type VARCHAR(100) NOT NULL,
-)
-CREATET TABLE Ingredient(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(150) NOT NULL,
-    price NUMBER(10,2) NOT NULL,
-    category VARCHAR(150)  NOT NULL,
-    id_dish INTEGER NOT NULL,
-
-    CONSTRAINT fk_ingredient_dish
-    FOREIGN KEY (id_dish)
-    REFERENCES Dish(id)
-    ON DELETE CASCADE
+-- Table de liaison entre plats et ingrédients
+CREATE TABLE recipe_ingredients (
+                                    id_dish INTEGER REFERENCES dishes(id) ON DELETE CASCADE,
+                                    id_ingredient INTEGER REFERENCES ingredients(id) ON DELETE CASCADE,
+                                    quantity_needed DECIMAL(10,2) NOT NULL,
+                                    PRIMARY KEY (id_dish, id_ingredient)
 );

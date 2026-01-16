@@ -7,13 +7,24 @@ public class Ingredient {
     private String name;
     private double price;
     private CategoryEnum category;
+    private Double requiredQuantity;
+
 
     public Ingredient() {}
+
 
     public Ingredient(String name, double price, CategoryEnum category) {
         this.name = name;
         this.price = price;
         this.category = category;
+        this.requiredQuantity = getRequiredQuantity();
+    }
+
+    public Ingredient(String name, double price, CategoryEnum category, Double requiredQuantity) {
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.requiredQuantity = null;
     }
 
     public Integer getId() { return id; }
@@ -27,5 +38,7 @@ public class Ingredient {
 
     public CategoryEnum getCategory() { return category; }
     public void setCategory(CategoryEnum category) { this.category = category; }
-}
 
+    public Double getRequiredQuantity() { return requiredQuantity; }
+    public void setRequiredQuantity(Double requiredQuantity) { this.requiredQuantity = requiredQuantity; }
+}
