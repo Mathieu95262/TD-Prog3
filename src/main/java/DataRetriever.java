@@ -49,6 +49,7 @@ public class DataRetriever {
                     WHERE di.dish_id = ?;
                     """
             );
+            
             ps.setInt(1, dishId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -144,7 +145,6 @@ public class DataRetriever {
             ps.executeBatch();
         }
     }
-
     private String getSerialSequenceName(Connection conn, String tableName, String columnName)
             throws SQLException {
         String sql = "SELECT pg_get_serial_sequence(?, ?)";
