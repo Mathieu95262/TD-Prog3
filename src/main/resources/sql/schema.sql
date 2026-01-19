@@ -52,12 +52,14 @@ CREATE TABLE IF NOT EXISTS ingredient (
   name VARCHAR(200) NOT NULL UNIQUE,
   unit_default VARCHAR(50) 
 );
-
+CREATE TYPE unit_type AS ENUM ('PCS','KG','L');
 CREATE TABLE IF NOT EXISTS dish_ingredient (
+    id SERIAL PRIMARY KEY,
   dish_id INTEGER NOT NULL REFERENCES dish(id) ON DELETE CASCADE,
   ingredient_id INTEGER NOT NULL REFERENCES ingredient(id) ON DELETE RESTRICT,
-  qty NUMERIC(10,3) NOT NULL DEFAULT 0,
-  unit VARCHAR(50)
+  qty NUMERIC(10,2) NOT NULL DEFAULT 0,
+  unit VARCHAR(50),
+  unit unit_type NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_dish_category ON dish(category_id);
