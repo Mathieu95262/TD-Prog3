@@ -18,6 +18,7 @@ create table ingredient
     category ingredient_category,
     id_dish  int references dish (id)
 );
+ALTER TABLE ingredient DROP COLUMN IF EXISTS id_dish;
 
 alter table dish
     add column if not exists price numeric(10, 2);
