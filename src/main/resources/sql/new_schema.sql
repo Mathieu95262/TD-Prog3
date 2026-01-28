@@ -1,3 +1,11 @@
+DROP TABLE IF EXISTS dish_ingredient CASCADE;
+DROP TABLE IF EXISTS ingredient CASCADE;
+DROP TABLE IF EXISTS dish CASCADE;
+
+DROP TYPE IF EXISTS unit_type CASCADE;
+DROP TYPE IF EXISTS ingredient_category CASCADE;
+DROP TYPE IF EXISTS dish_type CASCADE;
+
 CREATE TYPE dish_type AS ENUM
     ('STARTER', 'MAIN', 'DESSERT');
 
@@ -6,7 +14,6 @@ CREATE TYPE unit_type AS ENUM
 
 CREATE TYPE ingredient_category AS ENUM
     ('VEGETABLE', 'ANIMAL', 'MARINE', 'DAIRY', 'OTHER');
-
 
 CREATE TABLE dish (
                       id SERIAL PRIMARY KEY,
