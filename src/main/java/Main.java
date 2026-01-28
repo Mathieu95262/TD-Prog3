@@ -48,7 +48,7 @@ public class Main {
                     " - " + platSauvegarde.getName());
 
         } catch (Exception e) {
-            System.out.println("❌ Erreur sauvegarde: " + e.getMessage());
+            System.out.println("Erreur sauvegarde: " + e.getMessage());
         }
     }
 }
