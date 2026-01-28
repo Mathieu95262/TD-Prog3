@@ -3,7 +3,7 @@ public class DishIngredient {
     private Dish dish;
     private Ingredient ingredient;
     private Double quantityRequired;
-    private UnitEnum unit; // Enum PCS, KG, L
+    private UnitEnum unit;
 
     public DishIngredient(Integer id, Dish dish, Ingredient ingredient,
                           Double quantityRequired, UnitEnum unit) {

@@ -62,7 +62,7 @@ public class Dish {
         double totalCost = 0;
         if (dishIngredients != null) {
             for (DishIngredient di : dishIngredients) {
-                totalCost += di.getIngredient().getPrice() * di.getQuantityRequired();
+               totalCost += di.getIngredient().getPrice() * di.getQuantityRequired();
             }
         }
         return totalCost;
@@ -70,7 +70,7 @@ public class Dish {
 
     public Double getGrossMargin() {
         if (sellingPrice == null) {
-            throw new RuntimeException("Selling price is null for dish " + name);
+            throw new RuntimeException("Le prix de vente est null pour le plat " + name);
         }
         return sellingPrice - getDishCost();
     }

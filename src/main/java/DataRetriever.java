@@ -49,7 +49,6 @@ public class DataRetriever {
                     WHERE di.dish_id = ?;
                     """
             );
-            
             ps.setInt(1, dishId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -76,14 +75,14 @@ public class DataRetriever {
 
     public Dish saveDish(Dish toSave) {
         String upsertDishSql = """
-                INSERT INTO dish (id, name, dish_type, selling_price)
-                VALUES (?, ?, ?::dish_type, ?)
-                ON CONFLICT (id) DO UPDATE
-                SET name = EXCLUDED.name,
-                    dish_type = EXCLUDED.dish_type,
-                    selling_price = EXCLUDED.selling_price
-                RETURNING id
-                """;
+            INSERT INTO dish (id, name, dish_type, selling_price)
+            VALUES (?, ?, ?::dish_type, ?)
+            ON CONFLICT (id) DO UPDATE
+            SET name = EXCLUDED.name,
+                dish_type = EXCLUDED.dish_type,
+                selling_price = EXCLUDED.selling_price
+            RETURNING id
+            """;
 
         try (Connection conn = new DBConnection().getConnection()) {
             conn.setAutoCommit(false);
@@ -145,6 +144,7 @@ public class DataRetriever {
             ps.executeBatch();
         }
     }
+
     private String getSerialSequenceName(Connection conn, String tableName, String columnName)
             throws SQLException {
         String sql = "SELECT pg_get_serial_sequence(?, ?)";
