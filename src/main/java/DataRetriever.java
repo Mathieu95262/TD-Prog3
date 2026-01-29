@@ -257,9 +257,20 @@ public class DataRetriever {
             for (StockMovement movement : movements) {
                 if (movement.getId() == null) {
                     ps.setInt(1, ingredientId);
-                    ps.setDouble(2, movement.getQuantity());
+                    String ingredientName = getIngredientNameById(conn, ingredientId);
+                    double quantityInKG;
+
+                    if (movement.getUnit() == UnitEnum.KG) {
+                        quantityInKG = movement.getQuantity();
+                    } else {
+                        quantityInKG = Unit.convertToKG(ingredientName,
+                                movement.getQuantity(),
+                                movement.getUnit());
+                    }
+
+                    ps.setDouble(2, quantityInKG);
                     ps.setString(3, movement.getType().name());
-                    ps.setString(4, movement.getUnit().name());
+                    ps.setString(4, movement.getUnit().name()); // Garder l'unité originale
 
                     if (movement.getCreationDatetime() != null) {
                         ps.setTimestamp(5, Timestamp.from(movement.getCreationDatetime()));
@@ -321,38 +332,70 @@ public class DataRetriever {
             throw new RuntimeException("Erreur saveIngredient: " + e.getMessage(), e);
         }
     }
-
     public Double getStockValueAt(Integer ingredientId, Instant t) {
-        try (Connection conn = new DBConnection().getConnection();
-             PreparedStatement psStock = conn.prepareStatement("SELECT stock_quantity FROM ingredient WHERE id = ?")) {
-            psStock.setInt(1, ingredientId);
-            try (ResultSet rs = psStock.executeQuery()) {
-                if (!rs.next()) throw new RuntimeException("Ingredient not found");
-                double stockInitial = rs.getDouble("stock_quantity");
+        try (Connection conn = new DBConnection().getConnection()) {
+            // Récupérer le nom de l'ingrédient
+            String ingredientName = getIngredientNameById(conn, ingredientId);
 
-                String movementSql = """
-                SELECT
-                    SUM(CASE WHEN type = 'IN' THEN quantity ELSE 0 END) as total_in,
-                    SUM(CASE WHEN type = 'OUT' THEN quantity ELSE 0 END) as total_out
-                FROM stock_movement
-                WHERE ingredient_id = ? AND creation_datetime <= ?
-                """;
+            try (PreparedStatement psStock = conn.prepareStatement(
+                    "SELECT stock_quantity FROM ingredient WHERE id = ?")) {
+                psStock.setInt(1, ingredientId);
+                try (ResultSet rs = psStock.executeQuery()) {
+                    if (!rs.next()) throw new RuntimeException("Ingredient not found");
+                    double stockInitial = rs.getDouble("stock_quantity");
 
-                try (PreparedStatement psMove = conn.prepareStatement(movementSql)) {
-                    psMove.setInt(1, ingredientId);
-                    psMove.setTimestamp(2, Timestamp.from(t));
-                    try (ResultSet rsMove = psMove.executeQuery()) {
-                        double totalIn = 0, totalOut = 0;
-                        if (rsMove.next()) {
-                            totalIn = rsMove.getDouble("total_in");
-                            totalOut = rsMove.getDouble("total_out");
+                    String movementSql = """
+                    SELECT
+                        type,
+                        quantity,
+                        unit
+                    FROM stock_movement
+                    WHERE ingredient_id = ? AND creation_datetime <= ?
+                    """;
+
+                    try (PreparedStatement psMove = conn.prepareStatement(movementSql)) {
+                        psMove.setInt(1, ingredientId);
+                        psMove.setTimestamp(2, Timestamp.from(t));
+                        try (ResultSet rsMove = psMove.executeQuery()) {
+                            double stock = stockInitial;
+                            while (rsMove.next()) {
+                                String type = rsMove.getString("type");
+                                double quantity = rsMove.getDouble("quantity");
+                                String unitStr = rsMove.getString("unit");
+
+                                double quantityInKG;
+                                if ("KG".equals(unitStr)) {
+                                    quantityInKG = quantity;
+                                } else {
+                                    UnitEnum unit = UnitEnum.valueOf(unitStr);
+                                    quantityInKG = Unit.convertToKG(ingredientName, quantity, unit);
+                                }
+
+                                if ("IN".equals(type)) {
+                                    stock += quantityInKG;
+                                } else if ("OUT".equals(type)) {
+                                    stock -= quantityInKG;
+                                }
+                            }
+                            return stock;
                         }
-                        return stockInitial + totalIn - totalOut;
                     }
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    private String getIngredientNameById(Connection conn, Integer ingredientId) throws SQLException {
+        String sql = "SELECT name FROM ingredient WHERE id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, ingredientId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("name");
+                }
+            }
+        }
+        throw new SQLException("Ingredient non trouvé avec ID: " + ingredientId);
     }
 }
