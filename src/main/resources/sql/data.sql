@@ -18,3 +18,9 @@ INSERT INTO dish_ingredient (dish_id, ingredient_id, quantity_required, unit) VA
                                                                                   (2, 3, 1.00, 'KG'),
                                                                                   (4, 4, 0.30, 'KG'),
                                                                                   (4, 5, 0.20, 'KG');
+INSERT INTO stock_movement (id, ingredient_id, quantity, type, unit, creation_datetime) VALUES
+                                                                                            (6, 1, 0.2, 'OUT', 'KG', '2024-01-06 12:00:00'),
+                                                                                            (7, 2, 0.15, 'OUT', 'KG', '2024-01-06 12:00:00'),
+                                                                                            (8, 3, 1.0, 'OUT', 'KG', '2024-01-06 12:00:00'),
+                                                                                            (9, 4, 0.3, 'OUT', 'KG', '2024-01-06 12:00:00'),
+                                                                                            (10, 5, 0.2, 'OUT', 'KG', '2024-01-06 12:00:00');

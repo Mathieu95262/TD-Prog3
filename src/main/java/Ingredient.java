@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Ingredient {
@@ -5,7 +7,8 @@ public class Ingredient {
     private String name;
     private CategoryEnum category;
     private Double price;
-
+    private Double stockQuantity;
+    private List<StockMovement> stockMovementList;
     public Ingredient() {}
 
     public Ingredient(Integer id, String name, CategoryEnum category, Double price) {
@@ -13,6 +16,14 @@ public class Ingredient {
         this.name = name;
         this.category = category;
         this.price = price;
+    }
+
+    public Ingredient(Integer id, String name, CategoryEnum category, Double price, Double stockQuantity) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
     }
 
     public Integer getId() {
@@ -47,6 +58,22 @@ public class Ingredient {
         this.price = price;
     }
 
+    public Double getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(Double stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+
+    public List<StockMovement> getStockMovementList() {
+        return stockMovementList;
+    }
+
+    public void setStockMovementList(List<StockMovement> stockMovementList) {
+        this.stockMovementList = stockMovementList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,6 +97,7 @@ public class Ingredient {
                 ", name='" + name + '\'' +
                 ", category=" + category +
                 ", price=" + price +
+                ", stockQuantity=" + stockQuantity +
                 '}';
     }
 }

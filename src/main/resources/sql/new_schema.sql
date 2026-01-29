@@ -36,3 +36,20 @@ CREATE TABLE dish_ingredient (
                                  quantity_required NUMERIC(10, 2) NOT NULL,
                                  unit unit_type NOT NULL
 );
+
+ALTER TABLE ingredient ADD COLUMN IF NOT EXISTS stock_quantity NUMERIC(10, 2) DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS stock_movement (
+                                              id SERIAL PRIMARY KEY,
+                                              ingredient_id INTEGER REFERENCES ingredient(id) ON DELETE CASCADE,
+    quantity NUMERIC(10, 2) NOT NULL,
+    type VARCHAR(10) CHECK (type IN ('IN', 'OUT')) NOT NULL,
+    unit VARCHAR(10) NOT NULL,
+    creation_datetime TIMESTAMP WITH TIME ZONE DEFAULT now()
+    );
+
+UPDATE ingredient SET stock_quantity = 5.0 WHERE id = 1;
+UPDATE ingredient SET stock_quantity = 4.0 WHERE id = 2;
+UPDATE ingredient SET stock_quantity = 10.0 WHERE id = 3;
+UPDATE ingredient SET stock_quantity = 3.0 WHERE id = 4;
+UPDATE ingredient SET stock_quantity = 2.5 WHERE id = 5;
