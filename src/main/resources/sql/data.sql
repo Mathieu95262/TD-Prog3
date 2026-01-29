@@ -24,3 +24,12 @@ INSERT INTO stock_movement (id, ingredient_id, quantity, type, unit, creation_da
                                                                                             (8, 3, 1.0, 'OUT', 'KG', '2024-01-06 12:00:00'),
                                                                                             (9, 4, 0.3, 'OUT', 'KG', '2024-01-06 12:00:00'),
                                                                                             (10, 5, 0.2, 'OUT', 'KG', '2024-01-06 12:00:00');
+
+INSERT INTO "order" (id, reference, payment_status) VALUES
+                                                        (1, 'CMD001', 'UNPAID'),
+                                                        (2, 'CMD002', 'PAID'),
+                                                        (3, 'CMD003', 'UNPAID');
+
+
+INSERT INTO sale (order_id, sale_datetime) VALUES
+    (2, '2024-01-29 10:30:00');

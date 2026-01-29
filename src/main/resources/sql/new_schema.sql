@@ -53,3 +53,22 @@ UPDATE ingredient SET stock_quantity = 4.0 WHERE id = 2;
 UPDATE ingredient SET stock_quantity = 10.0 WHERE id = 3;
 UPDATE ingredient SET stock_quantity = 3.0 WHERE id = 4;
 UPDATE ingredient SET stock_quantity = 2.5 WHERE id = 5;
+
+
+DROP TYPE IF EXISTS payment_status CASCADE;
+CREATE TYPE payment_status AS ENUM ('UNPAID', 'PAID');
+
+
+CREATE TABLE IF NOT EXISTS "order" (
+                                       id SERIAL PRIMARY KEY,
+                                       reference VARCHAR(100) UNIQUE NOT NULL,
+    creation_datetime TIMESTAMP WITH TIME ZONE DEFAULT now(),
+    payment_status payment_status DEFAULT 'UNPAID'
+    );
+
+
+CREATE TABLE IF NOT EXISTS sale (
+                                    id SERIAL PRIMARY KEY,
+                                    order_id INTEGER UNIQUE REFERENCES "order"(id) ON DELETE CASCADE,
+    sale_datetime TIMESTAMP WITH TIME ZONE DEFAULT now()
+    );
